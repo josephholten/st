@@ -2093,6 +2093,13 @@ run:
 	if (argc > 0) /* eat all remaining arguments */
 		opt_cmd = argv;
 
+	/* If we have a single argument containing spaces/special chars, wrap in shell */
+	if (argc == 1 && (strchr(opt_cmd[0], ' ') || strchr(opt_cmd[0], '\t'))) {
+		static char *shell_cmd[4] = {"/bin/sh", "-c", NULL, NULL};
+		shell_cmd[2] = opt_cmd[0];
+		opt_cmd = shell_cmd;
+	}
+
 	if (!opt_title)
 		opt_title = (opt_line || !opt_cmd) ? "st" : opt_cmd[0];
 
